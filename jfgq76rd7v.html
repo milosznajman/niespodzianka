@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Adi tu był</title>
+    <style>
+        /* RESET I BLOKADA SCROLLA */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden; 
+            background-color: #ffe4e1;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        #countdown-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle, #fff0f5 0%, #ffe4e1 100%);
+        }
+
+        /* LEWA STRONA: LICZNIK */
+        .countdown-left {
+            flex: 1.2; /* Nieco szersza sekcja dla licznika */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            border-right: 2px dashed #ffb6c1;
+        }
+
+        #status-text {
+            color: #db7093;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+        }
+
+        /* Stylizacja segmentów czasu */
+        .timer-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .time-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(219, 112, 147, 0.15);
+            min-width: 100px;
+        }
+
+        .time-value {
+            display: block;
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #ff69b4;
+            line-height: 1;
+        }
+
+        .time-label {
+            font-size: 0.9rem;
+            color: #db7093;
+            text-transform: uppercase;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* PRAWA STRONA: INFO */
+        .countdown-right {
+            flex: 0.8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .info-card {
+            padding: 40px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(219, 112, 147, 0.2);
+            text-align: center;
+            max-width: 350px;
+            border: 3px solid #ffb6c1;
+        }
+
+        .info-card h2 {
+            color: #db7093;
+            margin: 0 0 15px 0;
+            font-size: 1.8rem;
+        }
+
+        .info-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="countdown-wrapper">
+        <div class="countdown-left">
+            <h1 id="status-text">Zaczynamy za</h1>
+            <div class="timer-container" id="full-timer">
+                <div class="time-box">
+                    <span class="time-value" id="days">00</span>
+                    <span class="time-label">Dni</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="hours">00</span>
+                    <span class="time-label">Godz</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="minutes">00</span>
+                    <span class="time-label">Min</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="seconds">00</span>
+                    <span class="time-label">Sek</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="countdown-right">
+            <div class="info-card">
+                <h2>Zasady</h2>
+                <p>Pojawią się wkrótce!<br>Przygotuj się na niezłą zabawę. ✨</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA DOCELOWA ---
+        const targetDate = new Date("Feb 17, 2026 18:00:00").getTime();
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                // Akcja po zakończeniu czasu:
+                document.body.innerHTML = `
+                    <div style="display:flex; justify-content:center; align-items:center; height:100vh; background:#ffe4e1; flex-direction:column;">
+                        <h1 style="color:#db7093; font-size:3rem;">CZAS START!</h1>
+                        <p style="color:#ff69b4;">Odśwież stronę, aby zobaczyć planszę Bingo!</p>
+                    </div>`;
+                // Opcjonalnie: window.location.reload(); lub window.location.href = "bingo.html";
+                return;
+            }
+
+            // Obliczenia
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Wyświetlanie z dopisaniem zera na początku (format 01 zamiast 1)
+            document.getElementById("days").innerText = d.toString().padStart(2, '0');
+            document.getElementById("hours").innerText = h.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = m.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = s.toString().padStart(2, '0');
+        }
+
+        // Uruchomienie licznika co sekundę
+        const timerInterval = setInterval(updateTimer, 1000);
+        updateTimer(); // Wywołanie od razu, żeby nie było widać 00 przez sekundę
+    </script>
+</body>
+</html>
